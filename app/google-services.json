@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "706338472255",
+    "project_id": "buyquick-d5454",
+    "storage_bucket": "buyquick-d5454.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:706338472255:android:06108cb587cf1480cad38a",
+        "android_client_info": {
+          "package_name": "com.udenyijoshua.buyquick"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZhXwOjeKLHuqcK-LOFximHDPPggj7BM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
