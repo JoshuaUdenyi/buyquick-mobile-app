@@ -1,6 +1,5 @@
 package com.udenyijoshua.buyquick.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -25,15 +23,11 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -47,7 +41,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import com.udenyijoshua.buyquick.R
 import com.udenyijoshua.buyquick.screens.components.FilledCustomButton
 import com.udenyijoshua.buyquick.ui.theme.Metropolis
@@ -145,7 +138,7 @@ fun ProductItem(){
             //TODO: the first container that house the "-20%", the girl image and the favorite card
             Column(
                 modifier = Modifier.padding(top = 16.dp),
-                verticalArrangement = Arrangement.spacedBy((-30).dp),
+                verticalArrangement = Arrangement.spacedBy((-30).dp) // Ensures it overlaps the content,
             ) {
                 Box(
                     modifier = Modifier
@@ -187,12 +180,12 @@ fun ProductItem(){
                 //TODO: Overlapping Card at the bottom right
                 Card(
                     modifier = Modifier
-                        .size(30.dp) // Aligns it to the bottom end of the parent
-                        .offset(y = 13.dp)
-                        .align(Alignment.End)// Moves the Card 15dp downwards to overlap
-                    , // Ensures it overlaps the content
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(2.dp)
+                        .size(30.dp)
+                        .offset(y = 13.dp) // Moves the Card 13dp downwards to overlap
+                        .align(Alignment.End) // Aligns it to the bottom end of the parent
+                    ,
+                    shape = RoundedCornerShape(16.dp), // Rounded corners
+                    elevation = CardDefaults.cardElevation(2.dp) //elevation shadow
                 ) {
                     Box(
                         modifier = Modifier
