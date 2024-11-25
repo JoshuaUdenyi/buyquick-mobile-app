@@ -15,12 +15,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,11 +33,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.udenyijoshua.buyquick.R
 import com.udenyijoshua.buyquick.screens.components.CustomTextField
 import com.udenyijoshua.buyquick.screens.components.FilledCustomButton
+import com.udenyijoshua.buyquick.ui.theme.Metropolis
 
 
 @Composable
@@ -43,7 +49,8 @@ fun Signup() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color.White) // Background for the entire screen
+                .background(Color.White)
+                .verticalScroll(rememberScrollState())// Background for the entire screen
         ) {
             // Top Section (e.g., Welcome Text or Banner)
             Column(
@@ -54,11 +61,17 @@ fun Signup() {
             ) {
                 Text(
                     text = "Sign up", style = TextStyle(
-                        fontSize = 24.sp, color = Color.Black
+                        fontSize = 34.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = Metropolis,
+                        color = Color.Black
                     )
                 )
             }
 
+            TextField(
+
+            )
             // Middle Section (Signup Forms)
             Column(
                 modifier = Modifier
@@ -66,11 +79,17 @@ fun Signup() {
                     .weight(4f) // Allocates 4 parts of the total space
                     .padding(horizontal = 16.dp) // Add horizontal padding
             ) {
-                CustomTextField() // Replace with your fields
+                CustomTextField(
+                    labelText = "Name"
+                ) // Replace with your fields
                 Spacer(Modifier.height(8.dp))
-                CustomTextField() // Replace with your fields
+                CustomTextField(
+                    labelText = "Email"
+                ) // Replace with your fields
                 Spacer(Modifier.height(8.dp))
-                CustomTextField() // Replace with your fields
+                CustomTextField(
+                    labelText = "Password"
+                ) // Replace with your fields
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -106,7 +125,10 @@ fun Signup() {
             ) {
                 Text(
                     text = "Or sign up with social account", style = TextStyle(
-                        fontSize = 16.sp, color = Color.Gray
+                        fontSize = 14.sp,
+                        color = Color.Black,
+                        fontFamily = Metropolis,
+                        fontWeight = FontWeight.SemiBold
                     ), modifier = Modifier.align(Alignment.CenterHorizontally) // Centered
                 )
                 Row(
@@ -119,6 +141,8 @@ fun Signup() {
                     Card(
                         onClick = {},
                         modifier = Modifier.size(94.dp, 64.dp),
+                        colors = CardDefaults.cardColors(Color.White),
+                        elevation = CardDefaults.elevatedCardElevation(2.dp)
                     ) {
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -139,6 +163,8 @@ fun Signup() {
                     Card(
                         onClick = {},
                         modifier = Modifier.size(94.dp, 64.dp),
+                        colors = CardDefaults.cardColors(Color.White),
+                        elevation = CardDefaults.elevatedCardElevation(2.dp)
                     ) {
                         Box(
                             modifier = Modifier.fillMaxSize(),

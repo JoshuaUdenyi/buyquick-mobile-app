@@ -20,8 +20,9 @@ fun FilledCustomButton(text: String,modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            containerColor = BtnFilledRed
-        )
+            containerColor = BtnFilledRed,
+        ),
+        elevation = ButtonDefaults.buttonElevation(6.dp)
     ) {
         Text(text = text)
     }

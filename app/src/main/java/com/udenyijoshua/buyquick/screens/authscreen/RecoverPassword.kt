@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,21 +40,40 @@ import com.udenyijoshua.buyquick.screens.components.CustomTextField
 import com.udenyijoshua.buyquick.screens.components.FilledCustomButton
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecoverPassword() {
-    Scaffold() { paddingValues ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { /* Handle back navigation */ }) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                title = {
+
+                }
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(Color.White) // Background for the entire screen
         ) {
+
             // Top Section (e.g., Welcome Text or Banner)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1.5f) // Allocates 2 parts of the total space
-                    .padding(16.dp, top = 60.dp) // Add padding if needed
+                    .weight(1f) // Allocates 2 parts of the total space
+                    .padding(start = 16.dp, end = 16.dp)
+
             ) {
                 Text(
                     text = "Forgot password", style = TextStyle(
@@ -66,20 +86,24 @@ fun RecoverPassword() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(4f) // Allocates 4 parts of the total space
-                    .padding(horizontal = 16.dp) // Add horizontal padding
+                    .weight(4f)
+                    .padding(horizontal = 16.dp)
             ) {
-                Text("Please, enter your email address. You will receive." +
-                        "a link to create a new password via email"
+                Text(
+                    "Please, enter your email address. You will receive." +
+                            "a link to create a new password via email"
                 )
 
                 Spacer(Modifier.height(16.dp))
 
-                CustomTextField() // Replace with your fields
+                CustomTextField(
+                    labelText = "Enter Email Address"
+                )
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(70.dp))
+
                 FilledCustomButton(
-                    "SEND"
+                    text = "SEND"
                 )
 
             }

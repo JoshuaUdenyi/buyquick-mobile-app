@@ -5,8 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.udenyijoshua.buyquick.screens.authscreen.Login
-import com.udenyijoshua.buyquick.screens.authscreen.RecoverPassword
-import com.udenyijoshua.buyquick.screens.toplevelscreens.Home
+import com.udenyijoshua.buyquick.screens.authscreen.Signup
 import com.udenyijoshua.buyquick.ui.theme.BuyQuickTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,9 +13,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BuyQuickTheme {
-                //Application()
-                RecoverPassword()
+            BuyQuickTheme() {
+//                Login()
+                Signup()
             }
         }
     }
