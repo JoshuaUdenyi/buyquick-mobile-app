@@ -69,9 +69,6 @@ fun Signup() {
                 )
             }
 
-            TextField(
-
-            )
             // Middle Section (Signup Forms)
             Column(
                 modifier = Modifier
