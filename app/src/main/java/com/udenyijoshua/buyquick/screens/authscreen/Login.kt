@@ -1,8 +1,11 @@
 package com.udenyijoshua.buyquick.screens.authscreen
 
+import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Card
@@ -25,26 +29,69 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.udenyijoshua.buyquick.MainActivity
 import com.udenyijoshua.buyquick.R
 import com.udenyijoshua.buyquick.screens.components.CustomTextField
 import com.udenyijoshua.buyquick.screens.components.FilledCustomButton
 import com.udenyijoshua.buyquick.ui.theme.AppBackground
 import com.udenyijoshua.buyquick.ui.theme.Metropolis
+import com.udenyijoshua.buyquick.viewmodel.AuthViewModel
 
+
+inline fun Modifier.noRippleClickable(
+    crossinline onClick: () -> Unit
+): Modifier = composed {
+    clickable(
+        indication = null, // Removes the ripple effect
+        interactionSource = remember { MutableInteractionSource() } // Tracks user interactions
+    ) {
+        onClick() // Executes the provided onClick lambda when clicked
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login() {
+fun Login(
+    authViewModel: AuthViewModel,
+    onNavigateToSignUp:() -> Unit
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    // Observe the authentication state (success, failure, loading, etc.)
+    val authState by authViewModel.authState.collectAsState()
+
+    // Handle navigation to MainActivity once the user is logged in
+    LaunchedEffect(authState) {
+        if (authState != null) {
+            // Navigate to MainActivity if authenticated
+            context.startActivity(Intent(context, MainActivity::class.java))
+            (context as? ComponentActivity)?.finish() // Close the login activity
+        }
+    }
+
+
+
+
     Scaffold(
         topBar = {
             TopAppBar(navigationIcon = {
@@ -57,7 +104,6 @@ fun Login() {
 
             })
         },
-
         containerColor = AppBackground
     ) { paddingValues ->
         Column(
@@ -91,12 +137,18 @@ fun Login() {
                     .padding(horizontal = 16.dp) // Add horizontal padding
             ) {
                 CustomTextField(
-                    labelText = "Email"
-                ) // Replace with your fields
+                    inputText = email,
+                    onValueChange = { email = it },
+                    labelText = "Email",
+                )
+
                 Spacer(Modifier.height(8.dp))
+
                 CustomTextField(
-                    labelText = "Password"
-                ) // Replace with your fields
+                    inputText = password,
+                    onValueChange = { password = it },
+                    labelText = "Password",
+                )
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -106,22 +158,35 @@ fun Login() {
                         .padding(top = 14.dp, bottom = 28.dp)
                 ) {
                     // Text with a font size of 14sp
+                    BasicText(
+                        text = "Don't have an account?",
+                        style = TextStyle(
+                            fontSize = 14.sp
+                        ),
+                        modifier = Modifier.weight(1f).noRippleClickable {
+                            onNavigateToSignUp()
+                        }
+                    )
                     Text(
                         text = "Forgot your password?",
                         fontSize = 14.sp,
                     )
-
                     Image(painter = painterResource(R.drawable.round_arrow),
                         contentDescription = "Arrow",
                         modifier = Modifier.clickable {
-
+                            // Handle forgot password logic
                         })
-
                 }
-                FilledCustomButton(
-                    "LOGIN"
-                )
 
+                // Submit Button (Login)
+                FilledCustomButton(
+                    "LOGIN", onSubmit = {
+                        // Trigger login attempt using the ViewModel
+                        authViewModel.loginWithEmailAndPassword(email, password)
+                    },
+                    isLoading = false,
+                    modifier = Modifier
+                )
             }
 
             // Bottom Section (Social Signup, Always at the Bottom)
@@ -177,7 +242,7 @@ fun Login() {
                         ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.facebook_icon),
-                                contentDescription = "Google Icon",
+                                contentDescription = "Facebook Icon",
                                 tint = Color.Unspecified
                             )
                         }
@@ -187,7 +252,6 @@ fun Login() {
                 }
             }
         }
-
     }
 }
 

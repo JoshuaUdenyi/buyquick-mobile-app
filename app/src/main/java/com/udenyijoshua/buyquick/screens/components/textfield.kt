@@ -32,15 +32,14 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CustomTextField(
-    labelText: String = "", inputText: String = "", modifier: Modifier = Modifier
+    labelText: String = "",
+    inputText: String = "",
+    onValueChange:(String)-> Unit,
+    modifier: Modifier = Modifier
 ) {
 
-    var input by remember {
-        mutableStateOf("")
-    }
-
     val labelPadding by animateDpAsState(
-        targetValue = if (input.isEmpty()) 21.dp else 5.dp,
+        targetValue = if (inputText.isEmpty()) 21.dp else 5.dp, label = "",
     )
 
     Card(
@@ -63,7 +62,7 @@ fun CustomTextField(
             // Label
             Text(
                 text = labelText,
-                color = if (input.isEmpty()) Color.Gray else Color.Black,
+                color = if (inputText.isEmpty()) Color.Gray else Color.Black,
                 fontSize = 14.sp,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -74,14 +73,14 @@ fun CustomTextField(
             BasicTextField(
 
                 maxLines = 1,
-                value = input,
-                onValueChange = { input = it },
+                value = inputText,
+                onValueChange = { onValueChange(it) },
                 textStyle = TextStyle(
                     color = Color.Black,
-                    fontSize = if(input.isNotEmpty()) 20.sp else 14.sp
+                    fontSize = if(inputText.isNotEmpty()) 20.sp else 14.sp
                 ), decorationBox = { innerTextField ->
                     Box(
-                        modifier = if(input.isNotEmpty()) Modifier.padding(top = 10.dp) else Modifier.padding(top = 0.dp)
+                        modifier = if(inputText.isNotEmpty()) Modifier.padding(top = 10.dp) else Modifier.padding(top = 0.dp)
                     ) {
                         innerTextField()
                     }

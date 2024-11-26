@@ -96,14 +96,16 @@ fun RecoverPassword() {
 
                 Spacer(Modifier.height(16.dp))
 
-                CustomTextField(
-                    labelText = "Enter Email Address"
-                )
+//                CustomTextField(
+//                    labelText = "Enter Email Address"
+//                )
 
                 Spacer(Modifier.height(70.dp))
 
                 FilledCustomButton(
-                    text = "SEND"
+                    text = "SEND",
+                    onSubmit = {},
+                    true
                 )
 
             }

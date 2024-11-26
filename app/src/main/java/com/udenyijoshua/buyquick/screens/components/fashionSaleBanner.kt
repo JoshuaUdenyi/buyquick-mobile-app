@@ -71,7 +71,7 @@ fun FashionSaleBanner() {
                 .width(160.dp)
                 .height(36.dp)
         ) {
-            FilledCustomButton(text = "Check")
+            FilledCustomButton(text = "Check", onSubmit = {}, isLoading = true)
         }
     }
 }
