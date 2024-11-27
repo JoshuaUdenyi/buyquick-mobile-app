@@ -1,6 +1,7 @@
 package com.udenyijoshua.buyquick.screens.authscreen
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -53,6 +54,7 @@ import com.udenyijoshua.buyquick.screens.components.CustomTextField
 import com.udenyijoshua.buyquick.screens.components.FilledCustomButton
 import com.udenyijoshua.buyquick.ui.theme.AppBackground
 import com.udenyijoshua.buyquick.ui.theme.Metropolis
+import com.udenyijoshua.buyquick.viewmodel.AuthState
 import com.udenyijoshua.buyquick.viewmodel.AuthViewModel
 
 
@@ -78,18 +80,23 @@ fun Login(
     val context = LocalContext.current
 
     // Observe the authentication state (success, failure, loading, etc.)
-    val authState by authViewModel.authState.collectAsState()
+    val authState = authViewModel.authState.collectAsState()
 
-    // Handle navigation to MainActivity once the user is logged in
-    LaunchedEffect(authState) {
-        if (authState != null) {
-            // Navigate to MainActivity if authenticated
-            context.startActivity(Intent(context, MainActivity::class.java))
-            (context as? ComponentActivity)?.finish() // Close the login activity
+//    // Handle navigation to MainActivity once the user is logged in
+
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Authenticated -> {
+                Toast.makeText(context, "Authenticated!", Toast.LENGTH_SHORT).show()
+                context.startActivity(Intent(context, MainActivity::class.java))
+                (context as? ComponentActivity)?.finish()
+            }
+            is AuthState.Error -> {
+                // Handle error state
+            }
+            else -> Unit
         }
     }
-
-
 
 
     Scaffold(

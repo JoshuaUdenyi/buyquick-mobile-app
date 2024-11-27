@@ -3,32 +3,61 @@ package com.udenyijoshua.buyquick.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+
+sealed class AuthState{
+    data object Authenticated: AuthState()
+    data object Unauthenticated: AuthState()
+    data object Loading: AuthState()
+    data class Error(val message: String): AuthState()
+}
+
 class AuthViewModel : ViewModel() {
 
     private val auth = Firebase.auth
 
     // StateFlow to track authentication state
-    private val _authState = MutableStateFlow<FirebaseUser?>(auth.currentUser)
-    val authState: StateFlow<FirebaseUser?> = _authState
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
+    val authState: StateFlow<AuthState> = _authState
+
+
+    //Check Authentication State
+
+    init {
+        checkAuthenticationAtStartup()
+    }
+
+    private fun checkAuthenticationAtStartup() {
+        if (auth.currentUser != null) {
+            _authState.value = AuthState.Authenticated
+        } else {
+            _authState.value = AuthState.Unauthenticated
+        }
+    }
+
 
     // Create a new account with email and password
     fun createAccountWithEmail(email: String, password: String) {
+        if (email.isEmpty() || password.isEmpty()){
+            _authState.value = AuthState.Error("Email or Password can't be empty")
+            return
+        }
+
         viewModelScope.launch {
+            //_authState.value = AuthState.Loading
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.d("AuthViewModel", "createUserWithEmail:success")
+                        _authState.value = AuthState.Authenticated
                         val user = auth.currentUser
-                        _authState.value = user
                     } else {
-                        val errorMessage = task.exception?.message ?: "Unknown error"
+                        val errorMessage = task.exception?.message ?: "Something went wrong"
+                        _authState.value = AuthState.Error(errorMessage)
                         Log.e("AuthViewModel", "createUserWithEmail:failure: $errorMessage")
                     }
                 }
@@ -37,18 +66,28 @@ class AuthViewModel : ViewModel() {
 
     // Log in an existing user with email and password
     fun loginWithEmailAndPassword(email: String, password: String) {
+
+        if (email.isEmpty() || password.isEmpty()){
+            _authState.value = AuthState.Error("Email or Password can't be empty")
+            return
+        }
         viewModelScope.launch {
+            //_authState.value = AuthState.Loading
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        _authState.value = AuthState.Authenticated
                         val user = auth.currentUser
-                        _authState.value = user
                         Log.d("AuthViewModel", "Login successful: ${user?.email}")
                     } else {
-                        val errorMessage = task.exception?.message ?: "Unknown error"
-                        Log.e("AuthViewModel", "Login failed: $errorMessage")
+                        _authState.value = AuthState.Error(task.exception?.message?: "Something went wrong")
                     }
                 }
         }
+    }
+
+    fun signOut(){
+        auth.signOut()
+        _authState.value = AuthState.Unauthenticated
     }
 }

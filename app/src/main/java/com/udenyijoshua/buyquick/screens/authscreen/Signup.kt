@@ -2,6 +2,7 @@ package com.udenyijoshua.buyquick.screens.authscreen
 
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,6 +52,7 @@ import com.udenyijoshua.buyquick.R
 import com.udenyijoshua.buyquick.screens.components.CustomTextField
 import com.udenyijoshua.buyquick.screens.components.FilledCustomButton
 import com.udenyijoshua.buyquick.ui.theme.Metropolis
+import com.udenyijoshua.buyquick.viewmodel.AuthState
 import com.udenyijoshua.buyquick.viewmodel.AuthViewModel
 
 
@@ -64,10 +66,15 @@ fun Signup(authViewModel: AuthViewModel) {
     val authState by authViewModel.authState.collectAsState()
 
     LaunchedEffect(authState) {
-        if (authState != null) {
-            // Navigate to MainActivity if authenticated
-            context.startActivity(Intent(context, MainActivity::class.java))
-            (context as? ComponentActivity)?.finish() // Close the login activity
+        when(authState){
+            is AuthState.Authenticated -> {
+                context.startActivity(Intent(context, MainActivity::class.java))
+                (context as? ComponentActivity)?.finish() // Close the login activity
+            }
+            is AuthState.Error -> {
+                Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            }
+            else -> Unit
         }
     }
     Scaffold() { paddingValues ->
@@ -149,7 +156,7 @@ fun Signup(authViewModel: AuthViewModel) {
                     onSubmit = {
                         authViewModel.createAccountWithEmail(email, password)
                     },
-                    isLoading = true
+                    isLoading = false
                 )
 
             }

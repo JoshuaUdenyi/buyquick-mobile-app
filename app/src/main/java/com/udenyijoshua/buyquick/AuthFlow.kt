@@ -1,15 +1,15 @@
 package com.udenyijoshua.buyquick
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,32 +24,25 @@ class AuthFlow : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            Authentication(authViewModel = authViewModel)
+            AuthenticationFlow(authViewModel = authViewModel)
+        }
+    }
+
+    private fun showError(message: String) {
+        setContent {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Error: $message")
+            }
         }
     }
 }
 
 @Composable
-fun Authentication(authViewModel: AuthViewModel) {
-    val authState by authViewModel.authState.collectAsState()
-    val context = LocalContext.current
-
-    // Handle navigation to MainActivity after successful authentication
-    LaunchedEffect(authState) {
-        if (authState != null) {
-            // Navigate to MainActivity
-            val intent = Intent(context, MainActivity::class.java)
-            context.startActivity(intent)
-            (context as? ComponentActivity)?.finish()
-        }
-    }
-
-    // If not authenticated, show the authentication screens
-    if (authState == null) {
-        val navController = rememberNavController()
-        AuthNavHost(navController, authViewModel)
-    }
+fun AuthenticationFlow(authViewModel: AuthViewModel) {
+    val navController = rememberNavController()
+    AuthNavHost(navController, authViewModel)
 }
 
 @Composable

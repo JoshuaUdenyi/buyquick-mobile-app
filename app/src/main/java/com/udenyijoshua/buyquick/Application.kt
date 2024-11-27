@@ -1,14 +1,19 @@
 package com.udenyijoshua.buyquick
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,6 +24,8 @@ import com.udenyijoshua.buyquick.screens.toplevelscreens.Bag
 import com.udenyijoshua.buyquick.screens.toplevelscreens.Home
 import com.udenyijoshua.buyquick.screens.toplevelscreens.Profile
 import com.udenyijoshua.buyquick.screens.toplevelscreens.Shop
+import com.udenyijoshua.buyquick.viewmodel.AuthState
+import com.udenyijoshua.buyquick.viewmodel.AuthViewModel
 
 // Sealed class for defining all the routes
 sealed class TopLevelRoute(val route: String, val name: String, val icon: Int) {
@@ -31,7 +38,20 @@ sealed class TopLevelRoute(val route: String, val name: String, val icon: Int) {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Application(modifier: Modifier = Modifier){
+fun Application(authViewModel: AuthViewModel,modifier: Modifier = Modifier){
+    val context = LocalContext.current
+    val authState = authViewModel.authState.collectAsState()
+
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Unauthenticated -> {
+                context.startActivity(Intent(context, AuthFlow::class.java))
+                (context as? ComponentActivity)?.finish()
+            }
+            else -> Unit
+        }
+    }
+
     val navController = rememberNavController()
     val topLevelRoutes = listOf(
         TopLevelRoute.Home,

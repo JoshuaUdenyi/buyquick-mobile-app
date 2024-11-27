@@ -1,5 +1,7 @@
 package com.udenyijoshua.buyquick.screens.components
 
+import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,21 +11,40 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.udenyijoshua.buyquick.AuthFlow
 import com.udenyijoshua.buyquick.R
 import com.udenyijoshua.buyquick.ui.theme.Metropolis
+import com.udenyijoshua.buyquick.viewmodel.AuthState
+import com.udenyijoshua.buyquick.viewmodel.AuthViewModel
 
 @Composable
 fun FashionSaleBanner() {
+    val context = LocalContext.current
+    val authViewModel: AuthViewModel = AuthViewModel()
+    val authState = authViewModel.authState.collectAsState()
+
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Unauthenticated -> {
+                context.startActivity(Intent(context, AuthFlow::class.java))
+                (context as? ComponentActivity)?.finish()
+            }
+            else -> Unit
+        }
+    }
     Box(
         modifier = Modifier.height(536.dp)
     ) {
@@ -71,7 +92,11 @@ fun FashionSaleBanner() {
                 .width(160.dp)
                 .height(36.dp)
         ) {
-            FilledCustomButton(text = "Check", onSubmit = {}, isLoading = true)
+            FilledCustomButton(
+                text = "Check", onSubmit = {
+                    authViewModel.signOut()
+                }, isLoading = false
+            )
         }
     }
 }
