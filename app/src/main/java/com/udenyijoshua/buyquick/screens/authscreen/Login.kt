@@ -77,6 +77,7 @@ fun Login(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     // Observe the authentication state (success, failure, loading, etc.)
@@ -90,6 +91,9 @@ fun Login(
                 Toast.makeText(context, "Authenticated!", Toast.LENGTH_SHORT).show()
                 context.startActivity(Intent(context, MainActivity::class.java))
                 (context as? ComponentActivity)?.finish()
+            }
+            is AuthState.Loading -> {
+                isLoading = true
             }
             is AuthState.Error -> {
                 // Handle error state
@@ -191,7 +195,7 @@ fun Login(
                         // Trigger login attempt using the ViewModel
                         authViewModel.loginWithEmailAndPassword(email, password)
                     },
-                    isLoading = false,
+                    isLoading = isLoading,
                     modifier = Modifier
                 )
             }

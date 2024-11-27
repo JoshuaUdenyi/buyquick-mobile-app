@@ -49,7 +49,7 @@ class AuthViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            //_authState.value = AuthState.Loading
+            _authState.value = AuthState.Loading
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -72,7 +72,7 @@ class AuthViewModel : ViewModel() {
             return
         }
         viewModelScope.launch {
-            //_authState.value = AuthState.Loading
+            _authState.value = AuthState.Loading
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {

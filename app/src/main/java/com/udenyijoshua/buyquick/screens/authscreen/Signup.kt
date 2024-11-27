@@ -62,6 +62,7 @@ fun Signup(authViewModel: AuthViewModel) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     val authState by authViewModel.authState.collectAsState()
 
@@ -70,6 +71,9 @@ fun Signup(authViewModel: AuthViewModel) {
             is AuthState.Authenticated -> {
                 context.startActivity(Intent(context, MainActivity::class.java))
                 (context as? ComponentActivity)?.finish() // Close the login activity
+            }
+            is AuthState.Loading -> {
+                isLoading = true
             }
             is AuthState.Error -> {
                 Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_SHORT).show()
@@ -156,7 +160,7 @@ fun Signup(authViewModel: AuthViewModel) {
                     onSubmit = {
                         authViewModel.createAccountWithEmail(email, password)
                     },
-                    isLoading = false
+                    isLoading = isLoading
                 )
 
             }

@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,8 +15,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,7 +42,7 @@ sealed class TopLevelRoute(val route: String, val name: String, val icon: Int) {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Application(authViewModel: AuthViewModel,modifier: Modifier = Modifier){
+fun Application(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val authState = authViewModel.authState.collectAsState()
 
@@ -48,6 +52,7 @@ fun Application(authViewModel: AuthViewModel,modifier: Modifier = Modifier){
                 context.startActivity(Intent(context, AuthFlow::class.java))
                 (context as? ComponentActivity)?.finish()
             }
+
             else -> Unit
         }
     }
@@ -60,7 +65,7 @@ fun Application(authViewModel: AuthViewModel,modifier: Modifier = Modifier){
         TopLevelRoute.Profile
     )
     Scaffold(
-        bottomBar = { BottomNavigationComponent(navController,topLevelRoutes) }
+        bottomBar = { BottomNavigationComponent(navController, topLevelRoutes) }
     ) {
         NavHost(navController = navController, startDestination = TopLevelRoute.Home.route) {
             composable(TopLevelRoute.Home.route) { Home() }
@@ -82,16 +87,25 @@ fun BottomNavigationComponent(
         val currentDestination = navBackStackEntry?.destination
 
         topLevelRoutes.forEach { route ->
+
+            val isSelected = currentDestination?.route == route.route
             NavigationBarItem(
                 icon = {
                     // Use ImageVector from drawable resource
                     Icon(
                         painter = painterResource(id = route.icon),
-                        contentDescription = route.name
+                        contentDescription = route.name,
+                        tint = if (isSelected) Color.Red else Color.Gray
                     )
                 },
-                label = { Text(route.name) },
-                selected = currentDestination?.route == route.route,
+                label = {
+                    Text(
+                        route.name,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                        color = if (isSelected) Color.Black else Color.Gray
+                    )
+                },
+                selected = isSelected,
                 onClick = {
                     // Safely navigate and ensure correct behavior
                     navController.navigate(route.route) {
@@ -100,7 +114,10 @@ fun BottomNavigationComponent(
                         restoreState = false
                     }
                 },
-                alwaysShowLabel = true
+                alwaysShowLabel = true,
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.Red
+                )
             )
         }
     }

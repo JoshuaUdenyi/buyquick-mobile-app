@@ -37,7 +37,7 @@ fun FilledCustomButton(
     ) {
         if (isLoading) {
             // Show CircularProgressIndicator while loading
-            CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White)
+            CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.Red)
         } else {
             // Show the button text when not loading
             Text(text = text)
