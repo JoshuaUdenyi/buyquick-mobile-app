@@ -43,10 +43,19 @@ android {
 }
 
 dependencies {
-    //Firebase Dependacies for Authentication
+    //Firebase Dependencies for Authentication
     implementation(platform(libs.firebase.bom))
+
+    //Firebase Dependency for Authentication
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
+
+    //Firebase Dependencies for Firestore
+    implementation(libs.firebase.firestore)
+
+    //Coil Dependency
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     implementation (libs.androidx.credentials)
     implementation(libs.androidx.core.ktx)

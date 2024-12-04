@@ -5,22 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,16 +26,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.size.Size
 import com.udenyijoshua.buyquick.R
-import com.udenyijoshua.buyquick.ui.theme.Metropolis
+import com.udenyijoshua.buyquick.data.Product
 
 @Composable
 fun ProductItem(
-    modifier: Modifier = Modifier
+    product: Product, modifier: Modifier = Modifier
 ) {
+
+    val isProductNew = product.isProductNew
+    println(product.ratingCount)
     //TODO: setup all my custom font for seamless usage, make sure to add the correct fonts
     val metropolis = FontFamily(
         Font(R.font.metropolis_black, FontWeight.Normal),
@@ -59,7 +56,8 @@ fun ProductItem(
 
     //TODO: first item
     Column(
-        horizontalAlignment = Alignment.Start, modifier = Modifier
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             .width(150.dp)
     ) {
@@ -76,32 +74,65 @@ fun ProductItem(
                     .background(Color.LightGray)
             ) {
                 //TODO: image for the person
-                Image(
-                    painter = painterResource(id = R.drawable.girl), // Replace with your image resource
-                    contentDescription = "girl in the box",
-                    contentScale = ContentScale.Crop, // Adjusts how the image fits
-                    modifier = Modifier.fillMaxSize() // Fills the entire Box
+//                Image(
+//                    painter = painterResource(id = R.drawable.girl), // Replace with your image resource
+//                    contentDescription = "girl in the box",
+//                    contentScale = ContentScale.Crop, // Adjusts how the image fits
+//                    modifier = Modifier.fillMaxSize() // Fills the entire Box
+//                )
+
+                AsyncImage(
+                    model = product.productImageUrl,
+                    contentDescription = "product_image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
                 )
 
                 //TODO: Box for the -20% off
-                Box(
-                    modifier = Modifier
-                        .padding(8.dp) // Apply padding last
-                        .width(40.dp)
-                        .height(25.dp) // Set size first
-                        .align(Alignment.TopStart) // Position the element
-                        .clip(RoundedCornerShape(16.dp)) // Apply rounded corners
-                        .background(Color.Red) // Set background color
-                ) {
-                    Text(
-                        text = "-20%",
-                        color = Color.White,
-                        fontSize = 11.sp,
-                        fontFamily = metropolis,
-                        fontWeight = FontWeight.Normal,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+
+                if (isProductNew) {
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp) // Apply padding last
+                            .width(40.dp)
+                            .height(25.dp) // Set size first
+                            .align(Alignment.TopStart) // Position the element
+                            .clip(RoundedCornerShape(16.dp)) // Apply rounded corners
+                            .background(Color.Black) // Set background color
+                    ) {
+                        Text(
+                            text = "NEW",
+                            color = Color.White,
+                            fontSize = 11.sp,
+                            fontFamily = metropolis,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
                 }
+
+                if(product.productHasDiscount){
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp) // Apply padding last
+                            .width(40.dp)
+                            .height(25.dp) // Set size first
+                            .align(Alignment.TopStart) // Position the element
+                            .clip(RoundedCornerShape(16.dp)) // Apply rounded corners
+                            .background(Color.Red) // Set background color
+                    ) {
+                        Text(
+                            text = "-20%",
+                            color = Color.White,
+                            fontSize = 11.sp,
+                            fontFamily = metropolis,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
+
+
             }
 
             //TODO: Overlapping Card at the bottom right
@@ -128,84 +159,7 @@ fun ProductItem(
             }
         }
 
-        //TODO: the row for the rating star and the "(10)"
-        Row(
-            modifier = Modifier.padding(top = 3.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                modifier = Modifier.selectableGroup(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                for (i in 1..5) {
-                    val isSelected = i <= 5
-                    val icon = if (isSelected) Icons.Filled.Star else Icons.Default.Star
-                    val iconTintColor = if (isSelected) Color(0xFFFFC700) else Color(0x20FFFFFF)
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = iconTintColor,
-                        modifier = Modifier
-                            .selectable(selected = isSelected, onClick = {
-//                                    onRatingChanged(i.toFloat())
-                            })
-                            .width(starSize)
-                            .height(starSize)
-                    )
 
-                    if (i < 5) {
-                        Spacer(modifier = Modifier.width(starSpacing))
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier.align(Alignment.CenterVertically)
-            ) {
-                Text(
-                    fontSize = 10.sp,
-                    fontFamily = Metropolis,
-                    fontWeight = FontWeight.Normal,
-                    text = "(10)"
-                )
-            }
 
-        }
-
-        //TODO: Other text and their properties
-        Text(
-            modifier = Modifier.padding(top = 3.dp),
-            text = "Dorothy Perkins",
-            fontSize = 10.sp,
-            fontFamily = Metropolis,
-            fontWeight = FontWeight.Normal
-        )
-
-        Text(
-            modifier = Modifier.padding(top = 3.dp),
-            text = "Evening Dress",
-            fontSize = 16.sp,
-            fontFamily = Metropolis,
-            fontWeight = FontWeight.SemiBold
-        )
-
-        Row(
-            modifier = Modifier.padding(top = 3.dp)
-        ) {
-            Text(
-                text = "15$",
-                fontFamily = Metropolis,
-                textDecoration = TextDecoration.LineThrough,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF9B9B9B)
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(
-                text = "12$",
-                fontFamily = Metropolis,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(0xFFDB3022)
-            )
-        }
     }
-
 }

@@ -44,18 +44,6 @@ sealed class TopLevelRoute(val route: String, val name: String, val icon: Int) {
 @Composable
 fun Application(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val authState = authViewModel.authState.collectAsState()
-
-    LaunchedEffect(authState.value) {
-        when (authState.value) {
-            is AuthState.Unauthenticated -> {
-                context.startActivity(Intent(context, AuthFlow::class.java))
-                (context as? ComponentActivity)?.finish()
-            }
-
-            else -> Unit
-        }
-    }
 
     val navController = rememberNavController()
     val topLevelRoutes = listOf(
