@@ -5,15 +5,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,12 +34,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.size.Size
 import com.udenyijoshua.buyquick.R
 import com.udenyijoshua.buyquick.data.Product
+import com.udenyijoshua.buyquick.ui.theme.Metropolis
 
 @Composable
 fun ProductItem(
@@ -111,7 +121,7 @@ fun ProductItem(
                     }
                 }
 
-                if(product.productHasDiscount){
+                if (product.productHasDiscount) {
                     Box(
                         modifier = Modifier
                             .padding(8.dp) // Apply padding last
@@ -119,12 +129,12 @@ fun ProductItem(
                             .height(25.dp) // Set size first
                             .align(Alignment.TopStart) // Position the element
                             .clip(RoundedCornerShape(16.dp)) // Apply rounded corners
-                            .background(Color.Red) // Set background color
+                            .background(Color.Black) // Set background color
                     ) {
                         Text(
-                            text = "-20%",
+                            text = "-${product.productDiscount}%",
                             color = Color.White,
-                            fontSize = 11.sp,
+                            fontSize = 9.sp,
                             fontFamily = metropolis,
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.align(Alignment.Center)
@@ -159,6 +169,92 @@ fun ProductItem(
             }
         }
 
+
+        //Start of Rating
+        Row(
+            modifier = Modifier.padding(top = 3.dp),
+        ) {
+            Row(
+                modifier = Modifier.selectableGroup(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                for (i in 1..5) {
+                    val isSelected = i <= 5
+                    val icon = if (isSelected) Icons.Filled.Star else Icons.Default.Star
+                    val iconTintColor = if (isSelected) Color(0xFFFFC700) else Color(0x20FFFFFF)
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTintColor,
+                        modifier = Modifier
+                            .selectable(selected = isSelected, onClick = {
+//                                    onRatingChanged(i.toFloat())
+                            })
+                            .width(starSize)
+                            .height(starSize)
+                    )
+
+                    if (i < 5) {
+                        Spacer(modifier = Modifier.width(starSpacing))
+                    }
+                }
+            }
+            Box(
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    fontSize = 10.sp,
+                    fontFamily = Metropolis,
+                    fontWeight = FontWeight.Normal,
+                    text = "(10)"
+                )
+            }
+        }
+        //Start of Rating
+
+
+        Text(
+            modifier = Modifier.padding(top = 3.dp),
+            text = product.productBrand,
+            fontSize = 10.sp,
+            fontFamily = Metropolis,
+            fontWeight = FontWeight.Normal
+        )
+        Text(
+            //modifier = Modifier.padding(top = 3.dp),
+            text = product.productName,
+            fontSize = 16.sp,
+            fontFamily = Metropolis,
+            fontWeight = FontWeight.SemiBold
+        )
+        Row(
+            modifier = Modifier.padding(top = 3.dp)
+        ) {
+            if (product.productHasDiscount  && product.productDiscount > 0 ){
+                Text(
+                    text = "${product.productDiscount}$",
+                    fontFamily = Metropolis,
+                    textDecoration = TextDecoration.LineThrough,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF9B9B9B)
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = "${product.productPrice}$",
+                    fontFamily = Metropolis,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFFDB3022)
+                )
+            }else{
+                Text(
+                    text = "${product.productPrice}$",
+                    fontFamily = Metropolis,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFFDB3022)
+                )
+            }
+
+        }
 
 
     }
